@@ -1,0 +1,33 @@
+docker-compose.prod.yml
+IntialThoughts/
+
+# Node
+node_modules/
+.next/
+dist/
+
+# Go
+bin/
+*.exe
+*.test
+*.out
+
+# Environment
+.env
+.env.*
+
+# Docker
+**/tmp/
+**/logs/
+**/coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sw?
+
+Dockerfile

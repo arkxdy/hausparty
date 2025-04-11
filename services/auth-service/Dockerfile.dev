@@ -1,0 +1,10 @@
+# services/auth-service/Dockerfile.dev
+
+FROM golang:1.21-alpine
+WORKDIR /app
+
+RUN apk add --no-cache git
+COPY . .
+
+RUN go install github.com/cosmtrek/air@latest
+CMD ["air"]

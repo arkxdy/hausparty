@@ -31,5 +31,20 @@ services:
     env_file: .env.dev
     depends_on: [auth-service]
 
+  api-gateway:
+    build:
+      context: ./apps/api-gateway
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/api-gateway:/app
+      - /app/node_modules
+    env_file: .env.dev
+    depends_on:
+      - auth-service
+      - redis
+      - postgres
+
 volumes:
   pgdata:

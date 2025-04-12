@@ -1,0 +1,25 @@
+# Node modules - always rebuild inside container
+node_modules
+
+# Output directory (if you're compiling TypeScript)
+dist
+
+# Local env files - should be mounted, not baked in
+.env
+.env.*
+
+# OS-related
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker files (if not needed inside container)
+Dockerfile*
+docker-compose*
+
+# IDE/config junk
+.vscode
+.idea
+*.swp

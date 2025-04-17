@@ -1,0 +1,3 @@
+[build]
+  bin = "/tmp/auth-service-main"
+  log = "/tmp/auth-service-errors.log"

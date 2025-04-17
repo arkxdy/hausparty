@@ -13,4 +13,5 @@ WORKDIR /app/services/auth-service
 # Download deps
 RUN go mod tidy
 
-CMD ["air"]
+# Run Air with build cmd that specifies the binary location
+CMD ["air", "-build.cmd", "go build -o /tmp/auth-service-main", "-build.bin", "/tmp/auth-service-main", "-build.log", "/tmp/auth-service-errors.log"]

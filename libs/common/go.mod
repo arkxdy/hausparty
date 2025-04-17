@@ -1,4 +1,4 @@
-module hauparty/services/auth-service
+module hauparty/libs/common
 
 go 1.23.4
 

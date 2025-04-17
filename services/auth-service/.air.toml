@@ -1,3 +1,10 @@
+# services/auth-service/.air.toml
+
+root = "." # or "/app/services/auth-service" for absolute path
+
 [build]
+  cmd = "go build -o /tmp/auth-service-main ."
   bin = "/tmp/auth-service-main"
   log = "/tmp/auth-service-errors.log"
+  include_ext = ["go"]
+  exclude_dir = ["vendor", "tmp"]

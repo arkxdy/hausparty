@@ -1,8 +1,8 @@
 package services
 
 import (
-	"hauparty/libs/common/models"
-	"hauparty/services/auth-service/repository"
+	models "hauparty/libs/db/models/users"
+	"hauparty/libs/db/repository"
 )
 
 type AuthService interface {
@@ -11,7 +11,7 @@ type AuthService interface {
 }
 
 type authService struct {
-	repo repository.UserRepository
+	repo repository.IUserRepository
 }
 
 // Login implements AuthService.
@@ -24,6 +24,6 @@ func (a *authService) Register(user *models.User) error {
 	panic("unimplemented")
 }
 
-func NewAuthService(repo repository.UserRepository) AuthService {
+func NewAuthService(repo repository.IUserRepository) AuthService {
 	return &authService{repo: repo}
 }

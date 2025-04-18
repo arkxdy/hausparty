@@ -9,6 +9,7 @@ import (
 
 func main() {
 	fmt.Println("Hello, Go!")
+	fmt.Println("Hello, Go!")
 	utils.LogInfo("Test")
 	conn, err := db.Connect()
 	if err != nil {

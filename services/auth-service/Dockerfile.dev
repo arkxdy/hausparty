@@ -14,6 +14,7 @@ WORKDIR /app/services/auth-service
 RUN go mod tidy
 
 # Run Air with build cmd that specifies the binary location
+# CMD ["air", "-c", "/app/services/auth-service/.air.toml"]
 CMD ["air", "-c", ".air.toml"]
 
 # CMD ["air", "-build.cmd", "go build -o /tmp/auth-service-main", "-build.bin", "/tmp/auth-service-main", "-build.log", "/tmp/auth-service-errors.log"]

@@ -13,23 +13,40 @@ services:
 
   auth-service:
     build:
-      context: ./services/auth-service
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: services/auth-service/Dockerfile.dev
     ports: ["8001:8001"]
     volumes:
-      - ./services/auth-service:/app
-    env_file: .env.dev
+      - .:/app:cached
+    environment:
+      APP_ENV: development
+      ENV_PATH: /app/.env.dev
     depends_on: [postgres]
 
-  web-ui:
+  # web-ui:
+  #   build:
+  #     context: ./apps/web-ui
+  #     dockerfile: Dockerfile.dev
+  #   ports: ["3000:3000"]
+  #   volumes:
+  #     - ./apps/web-ui:/app
+  #   env_file: .env.dev
+  #   depends_on: [auth-service]
+
+  api-gateway:
     build:
-      context: ./apps/web-ui
+      context: ./apps/api-gateway
       dockerfile: Dockerfile.dev
-    ports: ["3000:3000"]
+    ports:
+      - "3001:3001"
     volumes:
-      - ./apps/web-ui:/app
+      - ./apps/api-gateway:/app
+      - /app/node_modules
     env_file: .env.dev
-    depends_on: [auth-service]
+    depends_on:
+      - auth-service
+      - redis
+      - postgres
 
 volumes:
   pgdata:

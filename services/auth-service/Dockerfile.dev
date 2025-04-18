@@ -1,10 +1,20 @@
-# services/auth-service/Dockerfile.dev
+FROM golang:1.23.4
 
-FROM golang:1.21-alpine
 WORKDIR /app
 
-RUN apk add --no-cache git
+# Install Air
+RUN go install github.com/air-verse/air@latest
+
+# Copy entire repo context (to access go.work + libs + .env.dev)
 COPY . .
 
-RUN go install github.com/cosmtrek/air@latest
-CMD ["air"]
+WORKDIR /app/services/auth-service
+
+# Download deps
+RUN go mod tidy
+
+# Run Air with build cmd that specifies the binary location
+# CMD ["air", "-c", "/app/services/auth-service/.air.toml"]
+CMD ["air", "-c", ".air.toml"]
+
+# CMD ["air", "-build.cmd", "go build -o /tmp/auth-service-main", "-build.bin", "/tmp/auth-service-main", "-build.log", "/tmp/auth-service-errors.log"]

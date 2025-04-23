@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	models "hauparty/libs/db/models/party"
+	models "hausparty/libs/db/models/party"
 
 	"gorm.io/gorm"
 )

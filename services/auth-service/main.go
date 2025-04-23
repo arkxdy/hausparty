@@ -1,23 +1,32 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"hauparty/libs/common/utils"
-	"hauparty/libs/db"
+	"hausparty/libs/db"
 	"log"
+	"os"
 )
 
 func main() {
-	fmt.Println("Hello, Go!")
-	fmt.Println("Hello, Go!")
-	utils.LogInfo("Test")
-	conn, err := db.Connect()
+
+	ctx := context.Background()
+	println("service name", os.Getenv("SERVICE_NAME"))
+	dbFactory, err := db.Connect(ctx)
+
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
 	}
 
-	fmt.Println("Connection", conn)
-	// Use conn (gorm.DB instance)
-	_ = conn
+	// For identity service:
+	if os.Getenv("SERVICE_NAME") == "identity" {
+		err = dbFactory.AutoMigrateIdentity()
+	}
+	if err != nil {
+		log.Fatalf("Auto-migrate error: %v", err)
+	}
+
+	db := dbFactory.GetPostgres()
+	fmt.Println("Connection", db)
 	InitApp()
 }

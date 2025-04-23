@@ -1,60 +1,62 @@
 package db
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
-	"time"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 var (
-	dbInstance *gorm.DB
-	once       sync.Once
+	once        sync.Once
+	factoryInst *DBFactory
+	factoryErr  error
 )
 
-// Connect establishes a connection to PostgreSQL using GORM
-func Connect() (*gorm.DB, error) {
-	var err error
-
+func Connect(ctx context.Context) (*DBFactory, error) {
 	once.Do(func() {
+		// Load local env in non-prod
 		if os.Getenv("ENV") != "production" {
 			_ = godotenv.Load(filepath.Join("..", "..", ".env.dev"))
 		}
+		svc := os.Getenv("SERVICE_NAME")
+		dbType := DBType(os.Getenv("DB_TYPE"))
 
-		dsn := os.Getenv("DATABASE_URL")
-		if dsn == "" {
-			err = fmt.Errorf("DATABASE_URL not set")
-			return
+		switch dbType {
+		case PostgresDB:
+			key := fmt.Sprintf("%s_DATABASE_URL", strings.ToUpper(svc))
+			dsn := os.Getenv(key)
+			if dsn == "" {
+				factoryErr = fmt.Errorf("DATABASE_URL not set")
+				return
+			}
+			cfg := Config{
+				Type:        PostgresDB,
+				PostgresDSN: dsn,
+			}
+			factoryInst, factoryErr = NewDBFactory(ctx, cfg)
+
+		case MongoDB:
+			uri := os.Getenv("MONGO_URI")
+			dbName := os.Getenv("MONGO_DB_NAME")
+			if uri == "" || dbName == "" {
+				factoryErr = fmt.Errorf("MONGO_URI or MONGO_DB_NAME not set")
+				return
+			}
+			cfg := Config{
+				Type:        MongoDB,
+				MongoURI:    uri,
+				MongoDBName: dbName,
+			}
+			factoryInst, factoryErr = NewDBFactory(ctx, cfg)
+
+		default:
+			factoryErr = fmt.Errorf("unsupported DB_TYPE: %s", dbType)
 		}
-
-		db, dbErr := gorm.Open(postgres.Open(dsn), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Info),
-		})
-		if dbErr != nil {
-			err = fmt.Errorf("failed to connect to database: %w", dbErr)
-			return
-		}
-
-		sqlDB, sqlErr := db.DB()
-		if sqlErr != nil {
-			err = fmt.Errorf("failed to get DB instance: %w", sqlErr)
-			return
-		}
-
-		sqlDB.SetMaxIdleConns(10)
-		sqlDB.SetMaxOpenConns(100)
-		sqlDB.SetConnMaxLifetime(time.Hour)
-
-		log.Println("[DB] connected successfully")
-		dbInstance = db
 	})
-
-	return dbInstance, err
+	return factoryInst, factoryErr
 }

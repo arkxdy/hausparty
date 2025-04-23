@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	models "hauparty/libs/db/models/users"
+	models "hausparty/libs/db/models/users"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -15,11 +15,23 @@ type IAuthRepository interface {
 	CreateAuthCredentials(ctx context.Context, creds *models.AuthCredentials) error
 	UpdatePassword(ctx context.Context, userID string, newHash string) error
 	GetCredentialsByOAuthID(ctx context.Context, provider, oauthID string) (*models.AuthCredentials, error)
+	GetCredentialsByEmail(ctx context.Context, email string) (*models.AuthCredentials, error)
+	UpdateEmail(ctx context.Context, userID string, newEmail string) error
 }
 
 type authRepository struct {
 	db    *gorm.DB
 	redis *redis.Client
+}
+
+// GetCredentialsByEmail implements IAuthRepository.
+func (r *authRepository) GetCredentialsByEmail(ctx context.Context, email string) (*models.AuthCredentials, error) {
+	panic("unimplemented")
+}
+
+// UpdateEmail implements IAuthRepository.
+func (r *authRepository) UpdateEmail(ctx context.Context, userID string, newEmail string) error {
+	panic("unimplemented")
 }
 
 func (r *authRepository) CreateAuthCredentials(ctx context.Context, creds *models.AuthCredentials) error {

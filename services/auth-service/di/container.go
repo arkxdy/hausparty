@@ -1,9 +1,9 @@
 package di
 
 import (
-	"hauparty/libs/db/repository"
 	"hauparty/services/auth-service/handlers"
 	"hauparty/services/auth-service/services"
+	"hausparty/libs/db/repository"
 )
 
 type Container struct {

@@ -1,4 +1,4 @@
-module hauparty/libs/common
+module hausparty/libs/common
 
 go 1.23.4
 

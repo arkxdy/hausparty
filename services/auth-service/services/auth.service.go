@@ -1,8 +1,8 @@
 package services
 
 import (
-	models "hauparty/libs/db/models/users"
-	"hauparty/libs/db/repository"
+	models "hausparty/libs/db/models/users"
+	"hausparty/libs/db/repository"
 )
 
 type AuthService interface {

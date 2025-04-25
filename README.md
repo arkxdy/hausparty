@@ -1,21 +1,22 @@
 # 🎉 HausParty - Host & Join House Parties
 
-A microservices-based web and mobile platform to host and join small-scale house parties. Built for web (Next.js) and mobile (React Native + WebView), with scalable microservices using Go.
+A microservices-based web and mobile platform to host and join small-scale house parties. Built for web (React.js) and mobile (React Native + WebView), with scalable microservices using Go. API Gateway to handle request from UI using Node.js and Express.js
 
 ## 🚀 Features
 
-- Host or join parties
-- Admin approval for new hosts
-- User rating system
-- Mobile and web support (via WebView)
-- Fully dockerized with dev/prod environments
+- ✅ Host or join parties
+- ✅ Admin approval workflow for new hosts
+- ✅ Ratings & feedback for hosts and users
+- ✅ Realtime booking using Kafka (first-come-first-serve)
+- ✅ Shared UI for web & mobile via WebView
+- ✅ Fully containerized with Docker (dev & prod setups)
 
 ## 🧱 Tech Stack
 
-- Frontend: Next.js
-- Backend: Go (Gin), Docker, Kafka (optional)
+- Frontend: React.js
+- Backend: Go (Gin), Node.js, Express.js, Docker, Kafka
 - Mobile: React Native with WebView
-- DB: PostgreSQL + Redis
+- DB: PostgreSQL + MongoDB + Redis
 - Infra: Docker Compose
 
 ## 🏗️ Microservices

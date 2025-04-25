@@ -34,6 +34,8 @@ services:
       DB_TYPE: postgres
     depends_on: [postgres]
 
+  # ─────────────────────────────────────────────────────
+  # User Ui (web-ui)
   web-ui:
     build:
       context: ./apps/web-ui
@@ -65,6 +67,7 @@ services:
       - auth-service
       - redis
       - postgres
+      
   # ─────────────────────────────────────────────────────
   # Mongo for ratings
   mongo:

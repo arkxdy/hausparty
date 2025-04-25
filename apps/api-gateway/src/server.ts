@@ -13,7 +13,7 @@ server.use(cors({
 }));
 
 server.get('/', (_req: Request, res: Response) => {
-    res.status(200).json("Server is running")
+    res.status(200).json({"status": "Server is thick"})
 })
 
 server.use(cookieParser())
@@ -22,8 +22,5 @@ server.use(express.urlencoded({ extended: true}))
 server.use(compression())
 
 server.use('/api/v1/', apiVersionRouting)
-// server.get('/', (_req: Request, res: Response) => {
-//     return res.status(200).json("Server is running")
-// })
 
 export default server;

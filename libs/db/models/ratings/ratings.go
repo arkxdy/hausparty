@@ -9,7 +9,7 @@ import (
 
 // For MongoDB (using mongo-driver instead of GORM)
 type Rating struct {
-	ID           primitive.ObjectID `bson:"_id"`
+	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	PartyID      uuid.UUID          `bson:"party_id"`
 	UserID       uuid.UUID          `bson:"user_id"`
 	Rating       int                `bson:"rating"`

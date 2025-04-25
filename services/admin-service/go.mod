@@ -1,3 +1,3 @@
-module github.com/arkxdy/hausparty/services/admin-service
+module hauparty/services/admin-service
 
 go 1.23.4

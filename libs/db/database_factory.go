@@ -2,10 +2,14 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	partyModels "hausparty/libs/db/models/party"
 	models "hausparty/libs/db/models/users"
+	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/postgres"
@@ -79,7 +83,6 @@ func (f *DBFactory) GetMongo() *mongo.Database {
 }
 
 // AutoMigrateIdentity runs GORM auto-migrations for identity models
-
 func (f *DBFactory) AutoMigrateIdentity() error {
 	if f.pg == nil {
 		return nil
@@ -95,14 +98,50 @@ func (f *DBFactory) AutoMigrateIdentity() error {
 }
 
 // AutoMigrateParty runs GORM auto-migrations for party models
+func (f *DBFactory) AutoMigrateParty() error {
+	if f.pg == nil {
+		return nil
+	}
+	return f.pg.AutoMigrate(
+		&partyModels.Party{},
+		&partyModels.Attendee{},
+		&partyModels.Report{},
+	)
+}
 
-// func (f *DBFactory) AutoMigrateParty() error {
-// 	if f.pg == nil {
-// 		return nil
-// 	}
-// 	return f.pg.AutoMigrate(
-// 		&models.Party{},
-// 		&models.Attendee{},
-// 		&models.Report{},
-// 	)
-// }
+// AutoMigrateRating runs GORM auto-migrations for rating models
+func (f *DBFactory) AutoSetupRatingMongo() error {
+	if f.mongo == nil {
+		return errors.New("MongoDB client is nil")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	ratingColl := f.mongo.Collection(f.config.MongoDBName)
+
+	// Ensure indexes
+	indexes := []mongo.IndexModel{
+		{
+			Keys: bson.D{{Key: "party_id", Value: 1}},
+		},
+		{
+			Keys: bson.D{{Key: "user_id", Value: 1}},
+		},
+		{
+			Keys: bson.D{
+				{Key: "party_id", Value: 1},
+				{Key: "user_id", Value: 1},
+			},
+			Options: options.Index().SetUnique(true),
+		},
+	}
+
+	_, err := ratingColl.Indexes().CreateMany(ctx, indexes)
+	if err != nil {
+		return fmt.Errorf("failed to create indexes: %w", err)
+	}
+
+	log.Println("MongoDB 'ratings' collection and indexes set up successfully")
+	return nil
+}

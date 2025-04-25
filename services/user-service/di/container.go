@@ -3,16 +3,20 @@ package di
 import (
 	"context"
 	"fmt"
-	"hauparty/services/auth-service/handlers"
-	"hauparty/services/auth-service/services"
+	"hauparty/services/user-service/handlers"
+	"hauparty/services/user-service/services"
 	"hausparty/libs/db"
 	"hausparty/libs/db/repository"
 	"os"
+
+	"gorm.io/gorm"
 )
 
 type Container struct {
-	AuthHandler *handlers.AuthHandler
+	UserHandler *handlers.UserHandler
 }
+
+var DB *gorm.DB
 
 func BuildContainer(ctx context.Context) (*Container, error) {
 	serviceName := os.Getenv("SERVICE_NAME")
@@ -31,8 +35,8 @@ func BuildContainer(ctx context.Context) (*Container, error) {
 
 	db := dbFactory.GetPostgres()
 	repo := repository.NewUserRepository(db) // returns UserRepository interface
-	service := services.NewAuthService(repo) // takes interface, not concrete
-	handler := handlers.NewAuthHandler(service)
+	service := services.NewUserService(repo) // takes interface, not concrete
+	handler := handlers.NewUserHandler(service)
 
-	return &Container{AuthHandler: handler}, nil
+	return &Container{UserHandler: handler}, nil
 }

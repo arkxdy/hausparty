@@ -8,7 +8,7 @@ RUN go install github.com/air-verse/air@latest
 # Copy entire repo context (to access go.work + libs + .env.dev)
 COPY . .
 
-WORKDIR /app/services/auth-service
+WORKDIR /app/services/admin-service
 
 # Download deps
 RUN go mod tidy

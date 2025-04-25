@@ -3,8 +3,10 @@ package repository
 import (
 	"context"
 	models "hausparty/libs/db/models/ratings"
+	"time"
 
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type RatingRepository interface {
@@ -14,30 +16,35 @@ type RatingRepository interface {
 	DeleteRating(ctx context.Context, ratingID string) error
 }
 
-// GORM Implementation
-type RatingRepositoryGorm struct {
-	db *gorm.DB
+type mongoRatingRepo struct {
+	coll *mongo.Collection
+}
+
+// CreateRating implements RatingRepository.
+func (m *mongoRatingRepo) CreateRating(ctx context.Context, rating *models.Rating) error {
+	rating.ID = primitive.NewObjectID()
+	rating.CreatedAt = time.Now()
+	_, err := m.coll.InsertOne(ctx, rating)
+	return err
 }
 
 // DeleteRating implements RatingRepository.
-func (r *RatingRepositoryGorm) DeleteRating(ctx context.Context, ratingID string) error {
+func (m *mongoRatingRepo) DeleteRating(ctx context.Context, ratingID string) error {
 	panic("unimplemented")
 }
 
 // GetPartyRatings implements RatingRepository.
-func (r *RatingRepositoryGorm) GetPartyRatings(ctx context.Context, partyID string) ([]models.Rating, error) {
+func (m *mongoRatingRepo) GetPartyRatings(ctx context.Context, partyID string) ([]models.Rating, error) {
 	panic("unimplemented")
 }
 
 // UpdateHostResponse implements RatingRepository.
-func (r *RatingRepositoryGorm) UpdateHostResponse(ctx context.Context, ratingID string, response string) error {
+func (m *mongoRatingRepo) UpdateHostResponse(ctx context.Context, ratingID string, response string) error {
 	panic("unimplemented")
 }
 
-func NewRatingRepository(db *gorm.DB) RatingRepository {
-	return &RatingRepositoryGorm{db: db}
-}
-
-func (r *RatingRepositoryGorm) CreateRating(ctx context.Context, rating *models.Rating) error {
-	return r.db.WithContext(ctx).Create(rating).Error
+func NewMongoRatingRepository(db *mongo.Database) RatingRepository {
+	return &mongoRatingRepo{
+		coll: db.Collection("ratings"),
+	}
 }

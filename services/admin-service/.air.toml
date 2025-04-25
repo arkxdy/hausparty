@@ -1,0 +1,14 @@
+# services/rating-service/.air.toml
+
+root = "." # or "/app/services/admin-service" for absolute path
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o /tmp/main"
+  bin = "/tmp/main"
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  exclude_dir = ["vendor", "tmp"]
+  poll = true 
+
+[log]
+time = true

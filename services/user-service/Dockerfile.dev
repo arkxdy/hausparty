@@ -8,10 +8,9 @@ RUN go install github.com/air-verse/air@latest
 # Copy entire repo context (to access go.work + libs + .env.dev)
 COPY . .
 
-WORKDIR /app/services/auth-service
+WORKDIR /app/services/user-service
 
 # Download deps
 RUN go mod tidy
 
-# Run Air with build cmd that specifies the binary location
 CMD ["air", "-c", ".air.toml"]

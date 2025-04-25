@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"hauparty/services/auth-service/di"
-	"hauparty/services/auth-service/routes"
+	"hauparty/services/rating-service/di"
+	"hauparty/services/rating-service/routes"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +17,7 @@ func InitApp() {
 
 	routes.RegisterRoutes(router, container)
 
-	if err := router.Run(":" + os.Getenv("AUTH_SERVICE_PORT")); err != nil {
+	if err := router.Run(":" + os.Getenv("RATING_SERVICE_PORT")); err != nil {
 		panic("failed " + err.Error())
 	}
 }

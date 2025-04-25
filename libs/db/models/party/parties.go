@@ -13,7 +13,7 @@ type Party struct {
 	HostID      uuid.UUID `gorm:"type:uuid;index;not null"` // References User.ID in auth DB
 	Title       string    `gorm:"not null"`
 	Description string
-	Location    ewkb.Point `gorm:"type:geometry(Point,4326);not null"`
+	Location    ewkb.Point `gorm:"not null"` // Store as text (e.g., "lat,lng")
 	Address     string     `gorm:"not null"`
 	StartTime   time.Time  `gorm:"index"`
 	EndTime     time.Time
@@ -25,7 +25,7 @@ type Party struct {
 
 	// Relationships
 	Attendees []Attendee
-	Reports   []Report
+	Reports   []Report `gorm:"foreignKey:ReportedPartyID;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 // party_id        UUID PRIMARY KEY,

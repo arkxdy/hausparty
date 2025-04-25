@@ -16,8 +16,26 @@ services:
     ports:
       - "6379:6379"
 
+# ─────────────────────────────────────────────────────
+  # Identity Service (auth)
+  admin-service:
+    build:
+      context: .
+      dockerfile: services/admin-service/Dockerfile.dev
+    ports: ["8000:8000"]
+    volumes:
+      - .:/app:cached
+    env_file:
+      - .env.dev
+    environment:
+      APP_ENV: development
+      ENV_PATH: /app/.env.dev
+      SERVICE_NAME: admin    # used by your connect.go
+      DB_TYPE: postgres
+    depends_on: [postgres]
+
   # ─────────────────────────────────────────────────────
-  # Identity Service (auth + user)
+  # Identity Service (auth)
   auth-service:
     build:
       context: .
@@ -33,6 +51,60 @@ services:
       SERVICE_NAME: identity    # used by your connect.go
       DB_TYPE: postgres
     depends_on: [postgres]
+
+ # ─────────────────────────────────────────────────────
+  # User Service (user)
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile.dev
+    ports: ["8002:8002"]
+    volumes:
+      - .:/app:cached
+    env_file:
+      - .env.dev
+    environment:
+      APP_ENV: development
+      ENV_PATH: /app/.env.dev
+      SERVICE_NAME: identity    # used by your connect.go
+      DB_TYPE: postgres
+    depends_on: [auth-service,postgres]
+
+# ─────────────────────────────────────────────────────
+  # Party Service (user)
+  party-service:
+    build:
+      context: .
+      dockerfile: services/party-service/Dockerfile.dev
+    ports: ["8003:8003"]
+    volumes:
+      - .:/app:cached
+    env_file:
+      - .env.dev
+    environment:
+      APP_ENV: development
+      ENV_PATH: /app/.env.dev
+      SERVICE_NAME: party    # used by your connect.go
+      DB_TYPE: postgres
+    depends_on: [user-service,postgres]
+
+ # ─────────────────────────────────────────────────────
+  # Rating Service (user)
+  rating-service:
+    build:
+      context: .
+      dockerfile: services/rating-service/Dockerfile.dev
+    ports: ["8004:8004"]
+    volumes:
+      - .:/app:cached
+    env_file:
+      - .env.dev
+    environment:
+      APP_ENV: development
+      ENV_PATH: /app/.env.dev
+      SERVICE_NAME: rating    # used by your connect.go
+      DB_TYPE: mongo
+    depends_on: [party-service,mongo]
 
   # ─────────────────────────────────────────────────────
   # User Ui (web-ui)

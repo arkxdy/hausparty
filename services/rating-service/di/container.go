@@ -23,6 +23,12 @@ func BuildContainer(ctx context.Context) (*Container, error) {
 		return nil, fmt.Errorf("db connect: %w", err)
 	}
 
+	if serviceName == "rating" {
+		if err := dbFactory.AutoSetupRatingMongo(); err != nil {
+			return nil, fmt.Errorf("migration: %w", err)
+		}
+	}
+
 	repo := repository.NewMongoRatingRepository(dbFactory.GetMongo())
 	service := services.NewRatingService(repo)
 	handler := handlers.NewRatingHandler(*service)
